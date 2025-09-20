@@ -1,4 +1,4 @@
-# Headless service, normal service, StatefulSet
+# Headless service
 apiVersion: v1
 kind: Service
 metadata:
@@ -19,6 +19,7 @@ spec:
     port: 3306 # service port
     targetPort: 3306
 ---
+# Normal ClusterIP service
 apiVersion: v1
 kind: Service
 metadata:
@@ -38,6 +39,7 @@ spec:
     port: 3306 # service port
     targetPort: 3306
 ---
+# StatefulSet
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -63,14 +65,15 @@ spec:
       containers:
       - name: mysql
         image: trinathr/mysql:1.0.0
+        ports:
+        - containerPort: 3306
+          name: mysql
         volumeMounts:
         - name: mysql
           mountPath: /var/lib/mysql
-  # Instead of creating a PVC resource, you can directly provide in statefulset
   volumeClaimTemplates:
   - metadata:
       name: mysql
-      namespace: expense
     spec:
       accessModes: [ "ReadWriteOnce" ]
       storageClassName: "ebs-sc"
